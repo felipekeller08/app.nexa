@@ -1,0 +1,91 @@
+<section class="compras-page">
+  <div class="wrap">
+
+    <header class="page-title">
+      <h1>Lista de Compras</h1>
+      <div class="meta">
+        <span id="cmp-total-itens">0 itens</span>
+        <span id="cmp-total-valor">Total: R$ 0,00</span>
+      </div>
+    </header>
+
+    <!-- Card: Formulário -->
+    <article class="card">
+      <h2>Adicionar / Editar item</h2>
+      <form id="cmp-form" autocomplete="off">
+        <div class="grid">
+          <label class="field">
+            <span>Item</span>
+            <input class="input" id="cmp-nome" type="text" placeholder="Ex.: Arroz" required />
+          </label>
+
+          <label class="field">
+            <span>Categoria</span>
+            <select class="input" id="cmp-categoria" required>
+              <option value="Alimentos">Alimentos</option>
+              <option value="Bebidas">Bebidas</option>
+              <option value="Limpeza">Limpeza</option>
+              <option value="Higiene">Higiene</option>
+              <option value="Casa">Casa</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Quantidade</span>
+            <input class="input" id="cmp-quantidade" type="number" min="1" step="1" placeholder="Ex.: 2" required />
+          </label>
+
+          <label class="field">
+            <span>Preço unit. (R$)</span>
+            <input class="input" id="cmp-preco" type="number" min="0" step="0.01" placeholder="Ex.: 9,90" required />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--primary" type="submit" id="cmp-salvar">Salvar</button>
+          <button class="btn" type="button" id="cmp-cancelar" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </article>
+
+    <!-- Card: Busca -->
+    <article class="card">
+      <h2>Buscar</h2>
+      <div class="search-row">
+        <input class="input" id="cmp-busca" type="text" placeholder="Buscar por nome…" />
+        <button class="btn" id="cmp-btn-buscar">Buscar</button>
+        <button class="btn btn--muted" id="cmp-btn-limpar">Limpar</button>
+      </div>
+    </article>
+
+    <!-- Card: Lista -->
+    <article class="card">
+      <h2>Itens</h2>
+      <ul id="cmp-lista" class="list"></ul>
+    </article>
+
+    <!-- Card: Controle de gastos -->
+    <article class="card">
+      <h2>Controle de Gastos</h2>
+      <div class="limit-row">
+        <input class="input" id="cmp-limite" type="number" min="0" step="0.01" placeholder="Defina um limite (opcional)" />
+        <button class="btn" id="cmp-btn-limite">Aplicar limite</button>
+      </div>
+
+      <div class="chartbox">
+        <canvas id="cmp-chart"></canvas>
+      </div>
+
+      <p class="note">
+        O gráfico agrupa seus gastos por categoria. Se um limite for definido, o gráfico alterna para comparar
+        <strong>Gasto total × Limite</strong>.
+      </p>
+    </article>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Módulo desta página -->
+  <script type="module" src="./compras.js"></script>
+</section>

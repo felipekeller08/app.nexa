@@ -1,0 +1,123 @@
+/* ==========================================================
+   Nexa • Estudos — UI (escopado para .page-estudos)
+   ========================================================== */
+
+.page-estudos{
+  --bg: #f6f8fc;
+  --ink-900:#0f172a; --ink-800:#1f2937; --ink-700:#334155;
+  --muted:#0f235a; --muted-ink:#fff;
+  --card:#fff; --border:#e6e9f1; --shadow:0 12px 28px rgba(14,22,42,.08);
+  --accent:#f59e0b; --accent-700:#d97706;
+  --ok:#10b981; --danger:#ef4444; --info:#3b82f6;
+
+  background:var(--bg);
+  padding:22px 18px 56px;
+  color:var(--ink-800);
+  font-family:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+/* grids */
+.page-estudos .es-grid{
+  max-width: 1200px; margin:0 auto; display:grid; gap:18px;
+}
+.page-estudos .es-grid--top{ grid-template-columns: 1fr 1fr; }
+.page-estudos .es-grid--bottom{ grid-template-columns: 1fr 1fr; margin-top:14px; }
+
+@media (max-width: 980px){
+  .page-estudos .es-grid--top,
+  .page-estudos .es-grid--bottom{ grid-template-columns: 1fr; }
+}
+
+/* cards */
+.page-estudos .es-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:18px;
+}
+.page-estudos .es-card--form{
+  background:var(--muted);
+  color:var(--muted-ink);
+  border-color:#0d1d50;
+}
+.page-estudos .es-card h2{
+  margin:0 0 10px;
+  font:800 1.15rem/1 "Montserrat",system-ui,sans-serif;
+}
+
+/* rows & inputs */
+.page-estudos .es-row{ display:flex; gap:12px; align-items:center; margin:8px 0; }
+.page-estudos .es-row label{ min-width:170px; font:800 .9rem/1 "Montserrat"; color:#cdd6ea; }
+
+.page-estudos .es-input{
+  width:100%;
+  appearance:none;
+  border:1px solid var(--border);
+  background:#fff; color:var(--ink-900);
+  border-radius:10px;
+  padding:12px 14px;
+  font:600 .95rem/1 "Montserrat";
+  outline:none; transition:.16s box-shadow,.16s border-color;
+}
+.page-estudos .es-input--sm{ max-width:240px; }
+.page-estudos .es-card--form .es-input{ border-color:#0d1d50; }
+.page-estudos .es-input:focus{ border-color:#c9d4ff; box-shadow:0 0 0 4px rgba(30,58,138,.12); }
+
+/* buttons */
+.page-estudos .es-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  border-radius:10px; border:1px solid transparent; cursor:pointer;
+  font:800 .92rem/1 "Montserrat"; padding:12px 14px;
+  transition:.15s transform,.18s filter;
+}
+.page-estudos .es-btn:active{ transform: translateY(1px); }
+.page-estudos .es-btn--primary{
+  background:linear-gradient(180deg,#ffd789 0%,var(--accent) 100%);
+  color:#14213d; border-color:#f2c15a; width:100%;
+  box-shadow:0 8px 16px rgba(245,158,11,.18);
+}
+.page-estudos .es-btn--ok{ background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; }
+.page-estudos .es-btn--danger{ background:#fff0f0; border:1px solid #fecaca; color:#b91c1c; }
+.page-estudos .es-btn--ghost{ background:#fff; border:1px solid var(--border); color:var(--ink-700); }
+
+/* tabs / chips */
+.page-estudos .es-tabs{ display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 12px; }
+.page-estudos .es-chip{
+  border:1px solid var(--border); background:#fff; color:#0f172a;
+  border-radius:999px; padding:8px 14px; cursor:pointer; font:800 .9rem/1 "Montserrat";
+}
+.page-estudos .es-count{
+  margin-left:8px; padding:2px 8px; border-radius:999px;
+  background:#f1f5f9; border:1px solid #e2e8f0; font:800 .78rem/1 "Montserrat";
+}
+.page-estudos .es-chip.active{ background:#1e3a8a; border-color:#1e3a8a; color:#fff; }
+.page-estudos .es-chip.active .es-count{ background:rgba(255,255,255,.18); border-color:transparent; color:#fff; }
+
+/* list / item */
+.page-estudos .es-list{ display:grid; gap:12px; }
+.page-estudos .es-item{
+  border:1px solid var(--border); border-radius:14px; background:#fff; box-shadow:var(--shadow);
+  padding:14px; display:grid; gap:8px; grid-template-columns: 1fr auto;
+}
+.page-estudos .es-item h3{ margin:0; font:800 1rem/1.2 "Montserrat"; color:var(--ink-900); }
+.page-estudos .es-item .es-sub{ color:#64748b; font:700 .85rem/1 "Montserrat"; }
+.page-estudos .es-actions{ display:flex; gap:8px; align-items:start; }
+.page-estudos .es-bar{
+  grid-column:1 / -1;
+  height:10px; background:#edf2ff; border-radius:999px; overflow:hidden; border:1px solid #e2e8f0;
+}
+.page-estudos .es-bar > span{ display:block; height:100%; background:#22c55e; width:0%; transition: width .25s ease; }
+
+.page-estudos .es-diary{
+  grid-column:1 / -1; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  color:#0f172a; font:700 .82rem/1 "Montserrat";
+}
+.page-estudos .es-badge{
+  border-radius:999px; padding:4px 10px; border:1px solid #e2e8f0; background:#f8fafc;
+}
+
+/* states */
+.page-estudos .es-badge--ok{ background:#ecfdf5; border-color:#a7f3d0; color:#065f46; }
+.page-estudos .es-badge--info{ background:#eff6ff; border-color:#bfdbfe; color:#1e40af; }
+.page-estudos .es-badge--danger{ background:#fff0f0; border-color:#fecaca; color:#b91c1c; }

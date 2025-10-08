@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nexa • SPA (Local)</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/compras.css">
+  <link rel="stylesheet" href="/assets/css/tarefas.css">
+  <link rel="stylesheet" href="/assets/css/estudos.css">
+  <link rel="stylesheet" href="/assets/css/home.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="/modules/home.js"></script>
+  
+  <script defer type="module" src="/assets/js/app.js"></script>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="app-header" role="banner">
+    <button class="btn-icon hamburger" aria-label="Abrir menu">
+      <span class="hamburger-box"><span class="hamburger-inner"></span></span>
+    </button>
+
+    <a class="brand" data-link href="/">
+      <img class="brand-logo" src="/img/logo.png" alt="Nexa">
+    </a>
+
+    <button class="btn-icon profile" aria-label="Perfil">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" fill="none" stroke="white" stroke-width="2"/>
+        <path d="M4 20a8 8 0 0 1 16 0" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- MENU -->
+  <nav id="mobile-menu" class="side-menu" aria-hidden="true">
+    <div class="menu-header">
+      <button class="btn-icon close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <span class="menu-title">Menu</span>
+    </div>
+    <ul class="menu-list" role="menu">
+      <li><a data-link href="/">Home</a></li>
+      <li><a data-link href="/estudos">Estudos</a></li>
+      <li><a data-link href="/tarefas">Tarefas</a></li>
+      <li><a data-link href="/compras">Compras</a></li>
+      <li><a data-link href="/financas">Finanças</a></li>
+    </ul>
+  </nav>
+  <div class="backdrop" hidden></div>
+
+  <!-- CONTEÚDO -->
+  <main id="app" role="main" aria-live="polite"></main>
+</body>
+</html>

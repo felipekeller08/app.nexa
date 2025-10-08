@@ -1,0 +1,183 @@
+/* ==========================================================
+   Nexa • Compras — UI moderna (escopada)
+   Envolva a view com <section class="compras-page">…</section>
+   ========================================================== */
+
+.compras-page{
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  --border: #e6e9f1;
+  --ink-900:#0f172a;
+  --ink-800:#1f2937;
+  --ink-700:#334155;
+  --ink-600:#475569;
+
+  --brand:#1e3a8a;
+  --accent:#f59e0b;
+
+  --radius-lg:16px;
+  --radius-md:12px;
+  --radius-sm:10px;
+
+  background: var(--bg);
+  padding: 26px 18px 56px;
+  color: var(--ink-700);
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+.compras-page *{ box-sizing:border-box; }
+
+.compras-page .wrap{
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Title row */
+.compras-page .page-title{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  margin: 0 0 12px;
+}
+.compras-page .page-title h1{
+  margin:0;
+  font: 900 1.25rem/1.2 "Montserrat", system-ui, sans-serif;
+  color: var(--ink-900);
+}
+.compras-page .page-title .meta{
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+.compras-page .page-title .meta span{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 12px;
+  font-weight:800;
+  color:var(--ink-700);
+}
+
+/* Card */
+.compras-page .card{
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px 20px;
+  box-shadow: 0 10px 30px rgba(14, 22, 42, .08);
+  margin: 12px 0;
+}
+.compras-page .card h2{
+  margin:0 0 12px;
+  font: 800 1.02rem/1.2 "Montserrat", system-ui, sans-serif;
+  color: var(--ink-900);
+}
+
+/* Grid de inputs */
+.compras-page .grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:14px;
+}
+.compras-page .field{ display:flex; flex-direction:column; gap:6px; }
+.compras-page .field span{ font-weight:700; color:var(--ink-700); }
+
+.compras-page .input{
+  appearance:none; outline:none;
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background:#fff; color:var(--ink-800);
+  padding:10px 12px;
+  font: 600 .95rem/1 "Montserrat", system-ui, sans-serif;
+  transition:.16s border-color,.16s box-shadow;
+}
+.compras-page .input::placeholder{ color:#97a3b6; }
+.compras-page .input:focus{
+  border-color:#c9d4ff;
+  box-shadow:0 0 0 4px rgba(30,58,138,.08);
+}
+
+/* Ações */
+.compras-page .actions{
+  margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;
+}
+.compras-page .btn{
+  user-select:none; cursor:pointer;
+  border-radius:10px; border:1px solid transparent;
+  padding:10px 14px;
+  background:#f8fafc; color:var(--ink-800);
+  font:800 .93rem/1 "Montserrat", system-ui, sans-serif;
+  transition: .15s transform, .18s filter;
+}
+.compras-page .btn:hover{ filter:brightness(1.02); }
+.compras-page .btn:active{ transform: translateY(1px); }
+.compras-page .btn--primary{
+  background: linear-gradient(180deg,#ffd789 0%, var(--accent) 100%);
+  color:#14213d; border-color:#f2c15a;
+  box-shadow:0 6px 14px rgba(245,158,11,.18);
+}
+.compras-page .btn--muted{
+  background:#fff; border:1px solid var(--border);
+}
+
+/* Busca */
+.compras-page .search-row{
+  display:flex; gap:10px; flex-wrap:wrap;
+}
+
+/* Lista */
+.compras-page .list{
+  margin:0; padding:0; list-style:none;
+  display:flex; flex-direction:column; gap:10px;
+}
+.compras-page .list li{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px;
+  background:#fbfcff;
+  border:1px solid var(--border);
+  border-radius: var(--radius-md);
+  gap:14px;
+}
+.compras-page .list .info{
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  color:var(--ink-800); font-weight:700;
+}
+.compras-page .list .info .name{ color:var(--ink-900); font-weight:900; }
+.compras-page .list .info .cat{ color:#64748b; font-weight:800; }
+.compras-page .list .info .qty{ color:#334155; }
+.compras-page .list .info .price{ color:var(--brand); }
+
+.compras-page .list .actions{
+  display:flex; gap:8px;
+}
+
+/* Controle de gastos */
+.compras-page .limit-row{
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+.compras-page .chartbox{
+  border:1px solid var(--border);
+  border-radius: var(--radius-md);
+  background:#fff;
+  overflow:hidden; padding:8px;
+  min-height:280px;
+}
+.compras-page #cmp-chart{
+  width:100% !important; height:280px !important; display:block;
+}
+
+.compras-page .note{
+  margin:10px 0 0; color:#6a768a; font-size:.92rem; text-align:center;
+}
+
+/* Responsivo */
+@media (max-width: 900px){
+  .compras-page .grid{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px){
+  .compras-page .grid{ grid-template-columns: 1fr; }
+}
+.compras-page #cmp-chart{
+  width:100% !important;
+  height:320px !important;   /* reforço de altura */
+  display:block;
+}
