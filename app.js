@@ -3,9 +3,123 @@ const $=(s,c=document)=>c.querySelector(s);
 const $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const toNum=v=>v?Number(v):0;
 const fmtBRL=v=>(isNaN(v)?0:+v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-const todayISO=()=>new Date().toISOString().slice(0,10);
+
+// ==== usa data LOCAL (não UTC) ====  // << ALTERADO
+const todayISO=()=>{
+  const d=new Date();
+  d.setHours(0,0,0,0);
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+};
+
 const escapeHtml=s=>(s||"").replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fmtData=iso=>{try{const d=new Date(iso+"T00:00:00");return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});}catch{return iso;}};
+
+/* ===== Aviso grande central ===== */
+(function ensureNoticeStyles(){
+  if (document.getElementById("notice-styles")) return;
+  const css = `
+  @keyframes nexaFadeScaleIn { from { opacity:.0; transform: translateY(8px) scale(.98);} to { opacity:1; transform: translateY(0) scale(1);} }
+  @keyframes nexaFadeOut { to { opacity:0; } }
+  .nexa-notice-overlay{
+    position:fixed; inset:0; z-index:10000; display:grid; place-items:center;
+    background: color-mix(in oklab, #000 50%, transparent);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    animation: nexaFadeScaleIn .18s ease-out both;
+  }
+  .nexa-notice{
+    max-width:min(92vw,560px); width:100%;
+    border-radius:20px; padding:28px 24px; text-align:center;
+    box-shadow: 0 25px 80px -20px rgba(0,0,0,.5);
+    animation: nexaFadeScaleIn .22s ease-out both;
+  }
+  .nexa-notice h3{ margin:0 0 8px 0; font-size: clamp(18px, 3.5vw, 22px); font-weight:800; letter-spacing:.2px; }
+  .nexa-notice p{ margin:0; opacity:.95; font-size: clamp(14px, 3vw, 16px); }
+  .nexa-notice .cta{
+    margin-top:18px; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:10px 18px; border-radius:12px; font-weight:700; cursor:pointer; user-select:none;
+    box-shadow: 0 6px 20px -6px rgba(0,0,0,.35);
+  }
+
+  /* Tema Dark */
+  :root[data-theme="dark"] .nexa-notice{ background: #0b1022; border:1px solid rgba(255,255,255,.06); color:#e7ecff; }
+  :root[data-theme="dark"] .nexa-notice.success { border-color: rgba(16,185,129,.25); }
+  :root[data-theme="dark"] .nexa-notice.info    { border-color: rgba(59,130,246,.25); }
+  :root[data-theme="dark"] .nexa-notice.error   { border-color: rgba(239,68,68,.25); }
+  :root[data-theme="dark"] .nexa-notice .cta    { background: #111a36; color:#dce7ff; }
+
+  /* Tema Light */
+  :root[data-theme="light"] .nexa-notice{ background:#ffffff; border:1px solid rgba(0,0,0,.08); color:#0b1226; }
+  :root[data-theme="light"] .nexa-notice.success { border-color: rgba(16,185,129,.35); }
+  :root[data-theme="light"] .nexa-notice.info    { border-color: rgba(30,64,175,.35); }
+  :root[data-theme="light"] .nexa-notice.error   { border-color: rgba(185,28,28,.35); }
+  :root[data-theme="light"] .nexa-notice .cta    { background: #eef2ff; color:#0b1226; }
+
+  .nexa-notice .icon{
+    display:inline-flex; width:54px; height:54px; border-radius:14px; align-items:center; justify-content:center; margin-bottom:10px;
+  }
+  :root[data-theme="dark"] .nexa-notice.success .icon { background: rgba(16,185,129,.12); color:#6ee7b7; }
+  :root[data-theme="dark"] .nexa-notice.info    .icon { background: rgba(59,130,246,.12); color:#93c5fd; }
+  :root[data-theme="dark"] .nexa-notice.error   .icon { background: rgba(239,68,68,.12); color:#fecaca; }
+  :root[data-theme="light"] .nexa-notice.success .icon { background: rgba(16,185,129,.14); color:#065f46; }
+  :root[data-theme="light"] .nexa-notice.info    .icon { background: rgba(30,64,175,.14); color:#1e3a8a; }
+  :root[data-theme="light"] .nexa-notice.error   .icon { background: rgba(185,28,28,.14); color:#7f1d1d; }
+  `;
+  const style = document.createElement("style");
+  style.id = "notice-styles";
+  style.textContent = css;
+  document.head.appendChild(style);
+})();
+
+function showCenterNotice(message, type = "info", titleOverride) {
+  const titles = { success: "Tudo certo!", info: "Aviso", error: "Ops..." };
+  const icons  = { success: "✓", info: "ℹ", error: "!" };
+
+  const overlay = document.createElement("div");
+  overlay.className = "nexa-notice-overlay";
+  overlay.role = "dialog";
+  overlay.ariaModal = "true";
+
+  const box = document.createElement("div");
+  box.className = `nexa-notice ${type}`;
+
+  const icon = document.createElement("div");
+  icon.className = "icon";
+  icon.textContent = icons[type] || "ℹ";
+
+  const h3 = document.createElement("h3");
+  h3.textContent = titleOverride || titles[type] || "Aviso";
+
+  const p = document.createElement("p");
+  p.textContent = message;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "cta";
+  btn.textContent = "OK";
+
+  const close = () => {
+    overlay.style.animation = "nexaFadeOut .18s ease-out forwards";
+    box.style.animation = "nexaFadeOut .18s ease-out forwards";
+    setTimeout(()=>overlay.remove(), 160);
+  };
+
+  btn.addEventListener("click", close);
+  overlay.addEventListener("click", (e)=>{ if (e.target === overlay) close(); });
+  document.addEventListener("keydown", function esc(e){ if(e.key==="Escape"){ close(); document.removeEventListener("keydown", esc); }});
+
+  box.appendChild(icon);
+  box.appendChild(h3);
+  box.appendChild(p);
+  box.appendChild(btn);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  setTimeout(close, 2400);
+}
 
 /* ===== tema ===== */
 const root=document.documentElement;
@@ -43,7 +157,14 @@ $("#btnLogin").addEventListener("click",async(e)=>{e.preventDefault();const emai
 $("#btnSignup").addEventListener("click",async(e)=>{e.preventDefault();const email=$("#authEmail").value.trim(),pass=$("#authPass").value.trim();if(!email||!pass)return;await createUserWithEmailAndPassword(auth,email,pass).catch(alert);});
 $("#btnLogout").addEventListener("click",async()=>{if(auth.currentUser) await signOut(auth);});
 
-/* ===== estado global (uma ÚNICA declaração!) ===== */
+/* ===== Intenção de autenticação (para avisos) ===== */
+let __lastAuthIntent = null;
+let __prevUid = null;
+document.getElementById("btnLogin")?.addEventListener("click",()=>{__lastAuthIntent="login";},true);
+document.getElementById("btnSignup")?.addEventListener("click",()=>{__lastAuthIntent="signup";},true);
+document.getElementById("btnLogout")?.addEventListener("click",()=>{__lastAuthIntent="logout";},true);
+
+/* ===== estado global ===== */
 let USER=null;
 let charts={};
 let comprasCache=[];
@@ -58,16 +179,40 @@ const colEnts   =()=>collection(db,`users/${USER.uid}/fin_entries`);
 const colExits  =()=>collection(db,`users/${USER.uid}/fin_exits`);
 const docMeta   =()=>doc(db,`users/${USER.uid}/meta/_root`);
 
-/* ===== onAuth ===== */
+/* ===== onAuth — lógica da app (sem abrir o modal automaticamente) ===== */
 onAuthStateChanged(auth,(user)=>{
   USER=user||null;
-  if(USER){ authModal.close(); bootStreams(); showView("home"); }
-  else{
+  if(USER){
+    authModal.close();
+    bootStreams();
+    showView("home");
+  }else{
     Object.values(charts).forEach(c=>c?.destroy?.()); charts={};
-    ["listaEstudos","estudosConcluidos","listaMetas","listaTarefas","listaCompras","homeTopEstudos","homeTopCompras","homeTarefas"].forEach(id=>{const el=$("#"+id);if(el) el.innerHTML="";});
+    ["listaEstudos","estudosConcluidos","listaMetas","listaTarefas","listaCompras","homeTopEstudos","homeTopCompras","homeTarefas"]
+      .forEach(id=>{const el=$("#"+id);if(el) el.innerHTML="";});
     ["kpiEntradas","kpiSaidas","kpiReserva","kpiSaldo"].forEach(k=>$("#"+k).textContent="—");
-    showView("home"); authModal.showModal();
+    showView("home");
   }
+});
+
+/* ===== onAuth — avisos grandes ===== */
+onAuthStateChanged(auth,(user)=>{
+  const currUid = user ? user.uid : null;
+  const entrouAgora  = !__prevUid && currUid;
+  const saiuAgora    = __prevUid && !currUid;
+
+  if (entrouAgora) {
+    if (__lastAuthIntent === "signup") {
+      showCenterNotice("Conta criada com sucesso.", "success", "Bem-vindo(a) ao Nexa!");
+    } else if (__lastAuthIntent === "login") {
+      showCenterNotice("Entrou com sucesso.", "success", "Bem-vindo(a) de volta!");
+    }
+  } else if (saiuAgora && __lastAuthIntent === "logout") {
+    showCenterNotice("Usuário desconectado.", "info", "Até logo!");
+  }
+
+  __prevUid = currUid;
+  __lastAuthIntent = null;
 });
 
 /* ===== Estudos ===== */
@@ -197,23 +342,37 @@ $("#formLancamentos").addEventListener("submit",async(e)=>{
 async function computeKpis(){
   const [eSnap,sSnap,mSnap]=await Promise.all([getDocs(colEnts()),getDocs(colExits()),getDoc(docMeta())]);
   const entradas=eSnap.docs.reduce((s,d)=>s+toNum(d.data().amount),0);
-  const saídas=sSnap.docs.reduce((s,d)=>s+toNum(d.data().amount),0);
+  const saidas=snapToTotal(sSnap);
   const reserva=toNum(mSnap.data()?.reserva||0);
   $("#kpiEntradas").textContent=fmtBRL(entradas);
-  $("#kpiSaidas").textContent=fmtBRL(saídas);
+  $("#kpiSaidas").textContent=fmtBRL(saidas);
   $("#kpiReserva").textContent=fmtBRL(reserva);
-  $("#kpiSaldo").textContent=fmtBRL(entradas-saídas+reserva);
+  $("#kpiSaldo").textContent=fmtBRL(entradas-saidas+reserva);
 }
+function snapToTotal(snap){return snap.docs.reduce((s,d)=>s+toNum(d.data().amount),0);}
 const group={
-  semana(arr){const base=new Date(),d=(base.getDay()+6)%7,mon=new Date(base);mon.setDate(base.getDate()-d);
+  semana(arr){
+    const base=new Date(); // data local
+    // 0=Dom .. 6=Sab -> queremos segunda como 0
+    const d=(base.getDay()+6)%7;
+    const mon=new Date(base);
+    mon.setHours(0,0,0,0);
+    mon.setDate(base.getDate()-d);
     const L=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],map=new Array(7).fill(0);
-    arr.forEach(({date,amount})=>{const dt=new Date(date+"T00:00:00");const i=Math.floor((dt-mon)/86400000);if(i>=0&&i<7) map[i]+=toNum(amount);});
-    return{labels:L,data:map};},
+    arr.forEach(({date,amount})=>{
+      const dt=new Date(date+"T00:00:00"); // interpreta local
+      const i=Math.floor((dt-mon)/86400000);
+      if(i>=0&&i<7) map[i]+=toNum(amount);
+    });
+    return{labels:L,data:map};
+  },
   mes(arr){const b=new Date(),y=b.getFullYear(),m=b.getMonth(),L=["Sem 1","Sem 2","Sem 3","Sem 4"],map=[0,0,0,0];
     arr.forEach(({date,amount})=>{const dt=new Date(date+"T00:00:00");if(dt.getMonth()===m&&dt.getFullYear()===y){const w=Math.min(3,Math.floor((dt.getDate()-1)/7));map[w]+=toNum(amount);}});
     return{labels:L,data:map};},
   ano(arr){const L=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"],map=new Array(12).fill(0);
-    arr.forEach(({date,amount})=>{const dt=new Date(date+"T00:00:00");if(!isNaN(dt)) map[dt.getMonth()]+=toNum(amount);}); return{labels:L,data:map};}
+    arr.forEach(({date,amount})=>{const dt=new Date(date+"T00:00:00");if(!isNaN(dt)) map[dt.getMonth()]+=toNum(amount);});
+    return { labels: L, data: map };
+  }
 };
 $("#finChartMode").addEventListener("change",buildFinChart);
 $("#homeFinanceMode").addEventListener("change",buildHomeChart);
@@ -229,10 +388,20 @@ $("#formFx").addEventListener("submit",async(e)=>{
   const url2=`https://api.exchangerate.host/convert?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&amount=${amount}`;
   $("#fxResult").textContent="Convertendo...";
   try{
-    let out;const r=await fetch(url1); if(r.ok){const j=await r.json();out=j.rates?.[to];}
-    else{const r2=await fetch(url2);const j2=await r2.json();out=+j2.result;}
+    let out;
+    const r=await fetch(url1);
+    if(r.ok){
+      const j=await r.json();
+      out=j.rates?.[to];
+    }else{
+      const r2=await fetch(url2);
+      const j2=await r2.json();
+      out=+j2.result;
+    }
     $("#fxResult").innerHTML=`<span>${amount} ${from}</span><strong>≈ ${out?.toLocaleString("pt-BR")}</strong><span>${to}</span>`;
-  }catch{ $("#fxResult").textContent="Falha de conexão."; }
+  }catch{
+    $("#fxResult").textContent="Falha de conexão.";
+  }
 });
 
 /* ===== Home widgets ===== */
@@ -264,37 +433,87 @@ function bootStreams(){
 /* ===== util ===== */
 function empty(t="Nada por aqui."){return `<div class="empty">${t}</div>`;}
 
-// ===== PWA: registrar SW =====
+/* ===== PWA: registrar SW ===== */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").catch(console.error);
 }
 
-// ===== PWA: botão de instalar =====
+/* ===== PWA: botão de instalar ===== */
 let deferredPrompt;
-const btnInstall = document.createElement("button");
-btnInstall.id = "btnInstall";
-btnInstall.className = "btn-outline";
-btnInstall.textContent = "Instalar";
-btnInstall.style.marginLeft = "8px";
+const btnInstall=document.createElement("button");
+btnInstall.id="btnInstall";
+btnInstall.className="btn-outline";
+btnInstall.textContent="Instalar";
+btnInstall.style.marginLeft="8px";
+document.querySelector(".appbar__inner > div:last-child")?.prepend(btnInstall);
+btnInstall.style.display="none";
 
-// coloca ao lado do botão de usuário no header
-document.querySelector(".appbar__inner > div:last-child").prepend(btnInstall);
-btnInstall.style.display = "none";
-
-window.addEventListener("beforeinstallprompt", (e) => {
+window.addEventListener("beforeinstallprompt",(e)=>{
   e.preventDefault();
-  deferredPrompt = e;
-  btnInstall.style.display = "inline-flex";
+  deferredPrompt=e;
+  btnInstall.style.display="inline-flex";
 });
-
-btnInstall.addEventListener("click", async () => {
-  if (!deferredPrompt) return;
+btnInstall.addEventListener("click",async()=>{
+  if(!deferredPrompt) return;
   deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  btnInstall.style.display = "none";
+  await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  btnInstall.style.display="none";
+});
+window.addEventListener("appinstalled",()=>{ btnInstall.style.display="none"; });
+
+/* ===== Ações (AlphaVantage) ===== */
+const API_KEY = "CFZNTHL0VN6US8O7";
+async function buscarAcao(symbol) {
+  const resultadoDiv = document.getElementById("acaoResultado");
+  resultadoDiv.textContent = "Buscando...";
+  try {
+    const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${API_KEY}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Erro na requisição");
+    const data = await res.json();
+    if (!data["Global Quote"] || !data["Global Quote"]["05. price"]) {
+      resultadoDiv.textContent = "Ação não encontrada ou inválida.";
+      return;
+    }
+    const preco = parseFloat(data["Global Quote"]["05. price"]).toFixed(2);
+    const variacao = parseFloat(data["Global Quote"]["10. change percent"]).toFixed(2);
+    resultadoDiv.innerHTML = `
+      <strong>${symbol.toUpperCase()}</strong>: US$ ${preco}
+      <span style="color:${variacao >= 0 ? '#10b981' : '#ef4444'}">
+        (${variacao}%)
+      </span>
+    `;
+  } catch (err) {
+    console.error(err);
+    resultadoDiv.textContent = "Erro ao buscar a ação.";
+  }
+}
+document.getElementById("btnBuscarAcao").addEventListener("click", () => {
+  const symbol = document.getElementById("acaoSymbol").value.trim();
+  if (!symbol) return alert("Digite o ticker da ação.");
+  buscarAcao(symbol);
 });
 
-window.addEventListener("appinstalled", () => {
-  btnInstall.style.display = "none";
+/* ===== ENTER helpers extras ===== */
+// Enter no ticker ativa busca          // << ENTER helper
+$("#acaoSymbol")?.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    document.getElementById("btnBuscarAcao")?.click();
+  }
+});
+// Enter no limite aplica limite        // << ENTER helper
+$("#limiteGasto")?.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    $("#btnAplicarLimite")?.click();
+  }
+});
+// Enter no password faz login          // << ENTER helper
+$("#authPass")?.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    $("#btnLogin")?.click();
+  }
 });
