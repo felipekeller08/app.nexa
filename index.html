@@ -1,60 +1,304 @@
-<!doctype html>
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full" data-theme="dark">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nexa • SPA (Local)</title>
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <link rel="stylesheet" href="/assets/css/compras.css">
-  <link rel="stylesheet" href="/assets/css/tarefas.css">
-  <link rel="stylesheet" href="/assets/css/estudos.css">
-  <link rel="stylesheet" href="/assets/css/home.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Nexa — Sua vida organizada</title>
+  <meta name="theme-color" content="#040b1e" />
+  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#040b1e">
+<link rel="apple-touch-icon" href="/img/nexa-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="/img/title.png" />
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="/modules/home.js"></script>
-  
-  <script defer type="module" src="/assets/js/app.js"></script>
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <!-- HEADER -->
-  <header class="app-header" role="banner">
-    <button class="btn-icon hamburger" aria-label="Abrir menu">
-      <span class="hamburger-box"><span class="hamburger-inner"></span></span>
-    </button>
+<body class="h-full bg-surface text-text">
+  <!-- Drawer -->
+  <aside id="drawer" class="drawer" aria-label="Menu lateral">
+    <div class="p-5">
+      <nav class="space-y-1">
+        <button data-nav="home" class="nav-btn">Home</button>
+        <button data-nav="estudos" class="nav-btn">Estudos & Metas</button>
+        <button data-nav="tarefas" class="nav-btn">Tarefas</button>
+        <button data-nav="compras" class="nav-btn">Compras</button>
+        <button data-nav="financas" class="nav-btn">Finanças</button>
+      </nav>
+      <div class="mt-6 border-t border-white/10 pt-4">
+        <button id="btnLogout" class="btn-outline w-full">Sair da conta</button>
+      </div>
+    </div>
+  </aside>
+  <div id="overlay" class="overlay hidden" aria-hidden="true"></div>
 
-    <a class="brand" data-link href="/">
-      <img class="brand-logo" src="/img/logo.png" alt="Nexa">
-    </a>
+  <!-- Header -->
+  <header class="appbar">
+    <div class="appbar__inner">
+      <button id="btnMenu" class="icon-btn" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
 
-    <button class="btn-icon profile" aria-label="Perfil">
-      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-        <circle cx="12" cy="8" r="4" fill="none" stroke="white" stroke-width="2"/>
-        <path d="M4 20a8 8 0 0 1 16 0" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
+      <div class="logo-wrap">
+        <!-- Substitua o src abaixo pela sua imagem -->
+        <img id="logoNexa" class="logo" src="/img/logo.png" alt="Nexa - logo" style="border-radius: 20px;"/>
+      </div>
+
+      <div class="flex items-center gap-1">
+        <button id="btnTheme" class="icon-btn" aria-label="Alternar tema">
+          <svg id="iconTheme" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.64 13A9 9 0 1 1 11 2.36 7 7 0 0 0 21.64 13Z"/>
+          </svg>
+        </button>
+        <button id="btnUser" class="icon-btn" aria-label="Conta do usuário">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z"/><path d="M3 22a9 9 0 0 1 18 0Z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
   </header>
 
-  <!-- MENU -->
-  <nav id="mobile-menu" class="side-menu" aria-hidden="true">
-    <div class="menu-header">
-      <button class="btn-icon close" aria-label="Fechar menu">
-        <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <span class="menu-title">Menu</span>
-    </div>
-    <ul class="menu-list" role="menu">
-      <li><a data-link href="/">Home</a></li>
-      <li><a data-link href="/estudos">Estudos</a></li>
-      <li><a data-link href="/tarefas">Tarefas</a></li>
-      <li><a data-link href="/compras">Compras</a></li>
-      <li><a data-link href="/financas">Finanças</a></li>
-    </ul>
-  </nav>
-  <div class="backdrop" hidden></div>
+  <main class="container">
+    <!-- HOME -->
+    <section id="view-home" class="view">
+      <h1 class="section-title">Visão Geral</h1>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Finanças — Visão rápida</h2>
+            <select id="homeFinanceMode" class="input select-clean">
+              <option value="semana">Semanal</option>
+              <option value="mes">Mensal</option>
+              <option value="ano">Anual</option>
+            </select>
+          </div>
+          <div class="card-body"><canvas id="chartHome"></canvas></div>
+        </div>
 
-  <!-- CONTEÚDO -->
-  <main id="app" role="main" aria-live="polite"></main>
+        <div class="card"><div class="card-head"><h2 class="card-title">Estudos dos ultimos dias</h2></div><div id="homeTopEstudos" class="list"></div></div>
+        <div class="card"><div class="card-head"><h2 class="card-title">Compras mais caras</h2></div><div id="homeTopCompras" class="list"></div></div>
+        <div class="card"><div class="card-head"><h2 class="card-title">Tarefas — Status</h2></div><div id="homeTarefas" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4"></div></div>
+      </div>
+    </section>
+
+    <!-- ESTUDOS & METAS -->
+    <section id="view-estudos" class="view hidden">
+      <h1 class="section-title">Estudos & Metas</h1>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Novo estudo</h2></div>
+          <form id="formEstudo" class="card-body grid gap-3">
+            <input id="estudoTitulo" class="input" placeholder="O que vai estudar hoje?" required />
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="label">Início <input id="estudoInicio" type="date" class="input input-date mt-1" required /></label>
+              <label class="label">Término <input id="estudoFim" type="date" class="input input-date mt-1" required /></label>
+            </div>
+            <button class="btn-primary">Salvar estudo</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Nova meta</h2></div>
+          <form id="formMeta" class="card-body grid gap-3">
+            <input id="metaTitulo" class="input" placeholder="Qual é a sua meta?" required />
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="label">Início <input id="metaInicio" type="date" class="input input-date mt-1" required /></label>
+              <label class="label">Término <input id="metaFim" type="date" class="input input-date mt-1" required /></label>
+            </div>
+            <button class="btn-primary">Salvar meta</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card"><div class="card-head"><h2 class="card-title">Seus estudos</h2></div><div id="listaEstudos" class="card-body list"></div></div>
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Metas</h2>
+            <div class="tabs">
+              <button data-meta="andamento" class="chip chip-active">Em andamento</button>
+              <button data-meta="concluida" class="chip">Concluídas</button>
+              <button data-meta="nao-concluida" class="chip">Não concluídas</button>
+            </div>
+          </div>
+          <div id="listaMetas" class="card-body list"></div>
+        </div>
+      </div>
+
+      <details class="card mt-6">
+        <summary class="card-head cursor-pointer"><h2 class="card-title">Clique aqui para ver os estudos concluídos</h2></summary>
+        <div id="estudosConcluidos" class="card-body list"></div>
+      </details>
+    </section>
+
+    <!-- TAREFAS -->
+    <section id="view-tarefas" class="view hidden">
+      <h1 class="section-title">Tarefas</h1>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Nova tarefa</h2></div>
+          <form id="formTarefa" class="card-body grid gap-3">
+            <input id="tarefaTitulo" class="input" placeholder="Título da tarefa" required />
+            <textarea id="tarefaDesc" rows="4" class="input" placeholder="Descrição"></textarea>
+            <button class="btn-primary">Salvar tarefa</button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Painel</h2>
+            <div class="tabs">
+              <button data-tf="pendente" class="chip chip-active">Pendentes</button>
+              <button data-tf="andamento" class="chip">Em andamento</button>
+              <button data-tf="concluida" class="chip">Concluídas</button>
+            </div>
+          </div>
+          <div id="listaTarefas" class="card-body list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPRAS -->
+    <section id="view-compras" class="view hidden">
+      <h1 class="section-title">Compras</h1>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Registrar compra</h2></div>
+          <form id="formCompra" class="card-body grid gap-3">
+            <input id="compraItem" class="input" placeholder="Item comprado" required />
+            <div class="grid sm:grid-cols-2 gap-3">
+              <label class="label">Categoria
+                <select id="compraCategoria" class="input select-clean mt-1" required>
+                  <option value="" disabled selected>Selecione</option>
+                  <option value="Alimentação">Alimentação</option>
+                  <option value="Transporte">Transporte</option>
+                  <option value="Casa">Casa</option>
+                  <option value="Educação">Educação</option>
+                  <option value="Lazer">Lazer</option>
+                  <option value="Saúde">Saúde</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </label>
+              <label class="label">Quantidade <input id="compraQtd" type="number" min="1" value="1" class="input mt-1" required /></label>
+            </div>
+            <label class="label">Preço unitário (R$) <input id="compraPreco" type="number" step="0.01" class="input mt-1" required /></label>
+            <button class="btn-primary">Salvar compra</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2 class="card-title">Painel de compras</h2>
+            <div class="flex items-center gap-2">
+              <label class="label">Limite (R$)
+                <input id="limiteGasto" type="number" step="0.01" class="input mt-1 w-40" placeholder="Opcional" />
+              </label>
+              <button id="btnAplicarLimite" class="btn-outline">Aplicar</button>
+            </div>
+          </div>
+          <div id="listaCompras" class="card-body list"></div>
+        </div>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="card"><div class="card-head"><h2 class="card-title">Gasto x Limite</h2></div><div class="card-body"><canvas id="chartLimite"></canvas></div></div>
+        <div class="card"><div class="card-head"><h2 class="card-title">Gasto por categoria</h2></div><div class="card-body"><canvas id="chartCategorias"></canvas></div></div>
+      </div>
+    </section>
+
+    <!-- FINANÇAS -->
+    <section id="view-financas" class="view hidden">
+      <h1 class="section-title">Finanças</h1>
+      <div class="grid gap-6 lg:grid-cols-3">
+        <div class="card lg:col-span-2">
+          <div class="card-head"><h2 class="card-title">Lançamentos</h2></div>
+          <form id="formLancamentos" class="card-body grid sm:grid-cols-3 gap-3">
+            <label class="label">Entrada (R$) <input id="finEntrada" type="number" step="0.01" class="input mt-1" placeholder="0,00" /></label>
+            <label class="label">Saída (R$) <input id="finSaida" type="number" step="0.01" class="input mt-1" placeholder="0,00" /></label>
+            <label class="label">Reservas / Carteira (R$) <input id="finReserva" type="number" step="0.01" class="input mt-1" placeholder="0,00" /></label>
+            <button class="btn-primary sm:col-span-3">Salvar</button>
+          </form>
+
+          <div class="grid sm:grid-cols-4 gap-3 px-4 pb-4">
+            <div class="kpi"><span>Total entradas</span><strong id="kpiEntradas">—</strong></div>
+            <div class="kpi"><span>Total saídas</span><strong id="kpiSaidas">—</strong></div>
+            <div class="kpi"><span>Carteira</span><strong id="kpiReserva">—</strong></div>
+            <div class="kpi"><span>Saldo total</span><strong id="kpiSaldo">—</strong></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2 class="card-title">Conversor de moedas</h2></div>
+          <form id="formFx" class="card-body grid gap-3">
+            <label class="label">De
+              <select id="fxFrom" class="input select-clean mt-1">
+                <option value="BRL">BRL</option><option value="USD">USD</option><option value="EUR">EUR</option>
+                <option value="GBP">GBP</option><option value="ARS">ARS</option><option value="JPY">JPY</option>
+              </select>
+            </label>
+            <label class="label">Para
+              <select id="fxTo" class="input select-clean mt-1">
+                <option value="USD">USD</option><option value="BRL">BRL</option><option value="EUR">EUR</option>
+                <option value="GBP">GBP</option><option value="ARS">ARS</option><option value="JPY">JPY</option>
+              </select>
+            </label>
+            <label class="label">Valor <input id="fxAmount" type="number" step="0.01" class="input mt-1" value="1" /></label>
+            <button class="btn-outline">Converter</button>
+            <div id="fxResult" class="fx-result">—</div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-6">
+        <div class="card-head">
+          <h2 class="card-title">Gráfico</h2>
+          <select id="finChartMode" class="input select-clean">
+            <option value="semana">Semanal</option><option value="mes">Mensal</option><option value="ano">Anual</option>
+          </select>
+        </div>
+        <div class="card-body"><canvas id="chartFin"></canvas></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Auth -->
+  <dialog id="authModal" class="modal">
+    <form id="authForm" class="modal-box" method="dialog">
+      <h3 class="text-lg font-semibold mb-4">Acessar sua conta</h3>
+      <div class="grid gap-3">
+        <input id="authEmail" type="email" class="input" placeholder="Email" required />
+        <input id="authPass" type="password" class="input" placeholder="Senha" required />
+        <div class="grid grid-cols-2 gap-3">
+          <button id="btnLogin" class="btn-primary">Entrar</button>
+          <button id="btnSignup" class="btn-outline">Criar conta</button>
+        </div>
+        <button id="btnCloseModal" class="text-sm text-muted mt-1">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxXYoDfIedvCrnswKD0B49avMNoGnnNDE",
+      authDomain: "nexa-80ea5.firebaseapp.com",
+      projectId: "nexa-80ea5",
+      storageBucket: "nexa-80ea5.firebasestorage.app",
+      messagingSenderId: "337837531415",
+      appId: "1:337837531415:web:7fc239e852f76062035752"
+    };
+    const app = initializeApp(firebaseConfig);
+    window.__nexa = { auth: getAuth(app), db: getFirestore(app) };
+  </script>
+
+  <script src="app.js" type="module"></script>
 </body>
 </html>
