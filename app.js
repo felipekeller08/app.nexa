@@ -4,7 +4,7 @@ const $$=(s,c=document)=>[...c.querySelectorAll(s)];
 const toNum=v=>v?Number(v):0;
 const fmtBRL=v=>(isNaN(v)?0:+v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 
-// ==== usa data LOCAL (não UTC) ====  // << ALTERADO
+// ==== usa data LOCAL (não UTC) ====
 const todayISO=()=>{
   const d=new Date();
   d.setHours(0,0,0,0);
@@ -240,17 +240,21 @@ function renderEstudos(arr){
   $("#listaEstudos").innerHTML=ativos.map(x=>estudoCard(x)).join("")||empty("Sem estudos.");
   $("#estudosConcluidos").innerHTML=concl.map(x=>estudoCard(x,true)).join("")||empty("Nada concluído ainda.");
 }
-$("#listaEstudos, #estudosConcluidos").addEventListener("click",async(e)=>{
-  const yes=e.target.closest("[data-study-yes]"), no=e.target.closest("[data-study-no]");
-  const fin=e.target.closest("[data-study-done]"), del=e.target.closest("[data-study-del]");
-  if(yes||no){
-    const id=(yes||no).dataset.studyYes || (yes||no).dataset.studyNo;
-    const ref=doc(db,`users/${USER.uid}/studies/${id}`), snap=await getDoc(ref), data=snap.data()||{}, t=todayISO();
-    if(data.lastCheck!==t && yes) await updateDoc(ref,{daysStudied:(data.daysStudied||0)+1,lastCheck:t});
-    else await updateDoc(ref,{lastCheck:t});
-  }
-  if(fin) await updateDoc(doc(db,`users/${USER.uid}/studies/${fin.dataset.studyDone}`),{status:"concluido"});
-  if(del) await deleteDoc(doc(db,`users/${USER.uid}/studies/${del.dataset.studyDel}`));
+
+/* >>> FIX: registrar o mesmo handler nos dois contêineres <<< */
+["#listaEstudos","#estudosConcluidos"].forEach(sel=>{
+  $(sel)?.addEventListener("click",async(e)=>{
+    const yes=e.target.closest("[data-study-yes]"), no=e.target.closest("[data-study-no]");
+    const fin=e.target.closest("[data-study-done]"), del=e.target.closest("[data-study-del]");
+    if(yes||no){
+      const id=(yes||no).dataset.studyYes || (yes||no).dataset.studyNo;
+      const ref=doc(db,`users/${USER.uid}/studies/${id}`), snap=await getDoc(ref), data=snap.data()||{}, t=todayISO();
+      if(data.lastCheck!==t && yes) await updateDoc(ref,{daysStudied:(data.daysStudied||0)+1,lastCheck:t});
+      else await updateDoc(ref,{lastCheck:t});
+    }
+    if(fin) await updateDoc(doc(db,`users/${USER.uid}/studies/${fin.dataset.studyDone}`),{status:"concluido"});
+    if(del) await deleteDoc(doc(db,`users/${USER.uid}/studies/${del.dataset.studyDel}`));
+  });
 });
 
 /* ===== Metas ===== */
@@ -353,14 +357,13 @@ function snapToTotal(snap){return snap.docs.reduce((s,d)=>s+toNum(d.data().amoun
 const group={
   semana(arr){
     const base=new Date(); // data local
-    // 0=Dom .. 6=Sab -> queremos segunda como 0
     const d=(base.getDay()+6)%7;
     const mon=new Date(base);
     mon.setHours(0,0,0,0);
     mon.setDate(base.getDate()-d);
     const L=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],map=new Array(7).fill(0);
     arr.forEach(({date,amount})=>{
-      const dt=new Date(date+"T00:00:00"); // interpreta local
+      const dt=new Date(date+"T00:00:00");
       const i=Math.floor((dt-mon)/86400000);
       if(i>=0&&i<7) map[i]+=toNum(amount);
     });
@@ -496,21 +499,18 @@ document.getElementById("btnBuscarAcao").addEventListener("click", () => {
 });
 
 /* ===== ENTER helpers extras ===== */
-// Enter no ticker ativa busca          // << ENTER helper
 $("#acaoSymbol")?.addEventListener("keydown",(e)=>{
   if(e.key==="Enter"){
     e.preventDefault();
     document.getElementById("btnBuscarAcao")?.click();
   }
 });
-// Enter no limite aplica limite        // << ENTER helper
 $("#limiteGasto")?.addEventListener("keydown",(e)=>{
   if(e.key==="Enter"){
     e.preventDefault();
     $("#btnAplicarLimite")?.click();
   }
 });
-// Enter no password faz login          // << ENTER helper
 $("#authPass")?.addEventListener("keydown",(e)=>{
   if(e.key==="Enter"){
     e.preventDefault();
