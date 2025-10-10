@@ -132,3 +132,36 @@ body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;background:var(--
 @media (min-width: 640px){ .logo{ height: 66px; } }   /* tablets */
 @media (min-width: 1024px){ .logo{ height: 80px; } }  /* desktop */
 #btnInstall { align-items:center; height:40px; }
+/* --------- Chips (tabs) --------- */
+
+/* estado padrão (válido p/ ambos os temas, melhora o hover) */
+.chip{
+  background: color-mix(in oklab, var(--bg-soft, #f3f5f8) 100%, transparent);
+  border: 1px solid color-mix(in oklab, var(--fg-muted, #c9d1e6) 35%, transparent);
+  transition: background .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.chip:hover{
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--primary, #1e3a8a) 15%, transparent);
+}
+
+/* ativo no tema claro (você já tinha algo assim, deixei aqui p/ ficar completo) */
+:root[data-theme="light"] .chip-active{
+  background: rgba(16,185,129,.18);          /* verde suave */
+  color: #065f46;
+  border-color: rgba(16,185,129,.45);
+}
+
+/* ativo no tema escuro — o que estava faltando */
+:root[data-theme="dark"] .chip-active{
+  background: rgba(16,185,129,.16);
+  color: #6ee7b7;                             /* texto mais claro para contraste */
+  border-color: rgba(16,185,129,.55);
+  box-shadow: inset 0 0 0 1px rgba(16,185,129,.35);
+}
+
+/* opcional: quando o chip está ativo e recebe foco/hover no dark */
+:root[data-theme="dark"] .chip-active:hover,
+:root[data-theme="dark"] .chip-active:focus-visible{
+  background: rgba(16,185,129,.22);
+  border-color: rgba(16,185,129,.7);
+}
